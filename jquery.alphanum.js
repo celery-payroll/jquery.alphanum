@@ -379,9 +379,9 @@
 		if(Char == THOU_SEP && settings.allowThouSep && allowThouSep(validatedStringFragment))
 			return true;
 
-		if(Char == DEC_SEP) {
+        if(DEC_SEP.indexOf(Char) > -1) {
 			// Only one decimal separator allowed
-			if(validatedStringFragment.indexOf(DEC_SEP) >= 0)
+            if(indexOfArray(validatedStringFragment, DEC_SEP) >= 0)
 				return false;
 			// Don't allow decimal separator when maxDecimalPlaces is set to 0
 			if(settings.allowDecSep && settings.maxDecimalPlaces === 0)
@@ -424,7 +424,7 @@
 		if(maxDecimalPlaces === "" || isNaN(maxDecimalPlaces))
 			return false; // In this case, there is no maximum
 
-		var indexOfDecimalPoint = string.indexOf(DEC_SEP);
+        var indexOfDecimalPoint = indexOfArray(string, DEC_SEP);
 
 		if(indexOfDecimalPoint == -1)
 			return false;
@@ -445,7 +445,7 @@
 		if(maxPreDecimalPlaces === "" || isNaN(maxPreDecimalPlaces))
 			return false; // In this case, there is no maximum
 
-		var indexOfDecimalPoint = string.indexOf(DEC_SEP);
+        var indexOfDecimalPoint = indexOfArray(string, DEC_SEP);
 
 		if(indexOfDecimalPoint >= 0)
 			return false;
@@ -529,7 +529,23 @@
 		}
 
 		return outChars.join("");
-	}
+    }
+
+    function indexOfArray(subject, value){
+        var inReturn = -1;
+
+        if (typeof value === "object") {
+            $.each(value, function(){
+                inReturn = subject.indexOf(this);
+
+                return (inReturn === -1);
+            });
+        } else {
+            inReturn = subject.indexOf(value);
+		}
+
+        return inReturn;
+    }
 
 	function isUpper(Char){
 		var upper = Char.toUpperCase();
@@ -597,7 +613,7 @@
 			return false;
 
 		// Can't have a THOU_SEP anywhere after a DEC_SEP
-		var posOfDecSep = currentString.indexOf(DEC_SEP);
+        var posOfDecSep = indexOfArray(currentString, DEC_SEP);
 		if(posOfDecSep >= 0)
 			return false;
 
